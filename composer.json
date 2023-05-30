@@ -1,0 +1,29 @@
+{
+    "name": "picturae/joomla-installer",
+    "type": "project",
+    "description": "Command-line tool to install or update Joomla websites including Docker",
+    "keywords": ["joomla", "cli", "docker", "tools"],
+    "homepage": "https://github.com/picturae-mike/joomla-installer",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Picturae",
+            "email": "m.vandenberg@picturae.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+
+        "symfony/console": "^6.2",
+        "grasmash/symfony-console-spinner": "dev-main",
+        "vlucas/phpdotenv": "^5.5",
+        "phpunit/phpunit": "^10.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Picturae\\JoomlaInstaller\\": "src/App/",
+            "Picturae\\JoomlaConsole\\": "src/Console/"
+        }
+    },
+    "bin": ["bin/joomla-installer"]
+}
