@@ -1,5 +1,5 @@
 {
-    "name": "picturae/joomla-installer",
+    "name": "picturae-mike/joomla-installer",
     "type": "project",
     "description": "Command-line tool to install or update Joomla websites including Docker",
     "keywords": ["joomla", "cli", "docker", "tools"],
