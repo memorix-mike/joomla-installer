@@ -15,9 +15,11 @@
     "require": {
         "php": ">8.0",
         "symfony/console": "^6",
-        "grasmash/symfony-console-spinner": "dev-main",
         "vlucas/phpdotenv": "^5.5",
         "phpunit/phpunit": "^10.1"
+    },
+    "require-dev": {
+        "grasmash/symfony-console-spinner": "dev-main"
     },
     "autoload": {
         "psr-4": {
@@ -25,5 +27,5 @@
             "PicturaeInstaller\\Console\\": "src/Console/"
         }
     },
-    "bin": ["bin/joomla-installer"]
+    "bin": ["bin/joomla-installer.php"]
 }
