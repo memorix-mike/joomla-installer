@@ -26,8 +26,8 @@ class InstallJoomlaCommand extends Command
     {
         parent::__construct();
 
-        $this->install  = new Install;
-        $this->versions = $this->install::versions();
+        $this->versions = Install::versions();
+        $this->env      = new Env;
     }
 
     protected function configure(): void
@@ -45,8 +45,25 @@ class InstallJoomlaCommand extends Command
         $checklist  = new Checklist($output);
         $spinner    = new Spinner($output);
 
-        //
+        // Let's go.
         $io->title('Awesome Joomla Tool');
+
+        // Check if there is a .env file
+        if(!$this->env::exists()) {
+            $io->error(
+                [
+                    'No .env file in this project.',
+                    'Copy the .env.example file, rename to .env and enter the correct project information.',
+                    'Then restart the installation with the command again.'
+                ]
+            );
+            return Command::FAILURE;
+        }
+
+
+        // Start the installer
+        $this->install  = new Install;
+
 
         // 1. Check if we are installing or updating
         $spinner->setMessage('Checking for any Joomla installation');
@@ -100,9 +117,8 @@ class InstallJoomlaCommand extends Command
             return Command::FAILURE;
         }
 
+        // 3. -- Next step --
 
-        // 4.
-        // -- Check if there is already a .env file
 
         return command::SUCCESS;
     }

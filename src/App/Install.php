@@ -6,6 +6,8 @@ namespace PicturaeInstaller\App;
 use Dotenv\Dotenv;
 use ZipArchive;
 
+use PicturaeInstaller\App\Env;
+
 /**
  * Enums with versions that should be available within the installation
  */
@@ -25,8 +27,6 @@ class Install
 {
     public function __construct()
     {
-        var_dump('This is a test.'); exit;
-
         // Load Dotenv for environmental variables
         Dotenv::createUnsafeImmutable('./')->load();
     }
