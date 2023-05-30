@@ -34,8 +34,7 @@ class InstallJoomlaCommand extends Command
     {
         $this->setName('picturae:install')
             ->setDescription('This command runs your custom task')
-            ->setHelp('Run this command to execute your custom tasks in the execute function.')
-            ->addArgument('last_name', InputArgument::OPTIONAL, 'Your last name?');
+            ->setHelp('Run this command to execute your custom tasks in the execute function.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
