@@ -13,7 +13,7 @@
         }
     ],
     "require": {
-        "php": ">=7.4 || <=8.1",
+        "php": ">8.0",
 
         "symfony/console": "^6.2",
         "grasmash/symfony-console-spinner": "dev-main",
