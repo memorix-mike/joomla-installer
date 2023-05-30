@@ -23,8 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-            "PicturaeInstaller\\App\\": "src/App/",
-            "PicturaeInstaller\\Console\\": "src/Console/"
+            "PicturaeInstaller\\": "src/"
         }
     },
     "bin": ["bin/joomla-installer.php"]
