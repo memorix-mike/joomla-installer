@@ -15,10 +15,11 @@ require_once $root_app . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
 use Joomla\CMS\Installation\Console\InstallCommand;
-use PicturaeInstaller\Console\DownloadJoomlaCommand;
+
+use PicturaeInstaller\App\InstallJoomlaCommand;
 
 $app = new Application();
 
-$app->add(new DownloadJoomlaCommand());
+$app->add(new InstallJoomlaCommand());
 
 $app->run();
