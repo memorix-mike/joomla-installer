@@ -2,17 +2,15 @@
 
 namespace PicturaeInstaller\App;
 
-use Grasmash\SymfonyConsoleSpinner\Checklist;
-use Grasmash\SymfonyConsoleSpinner\Spinner;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
-use PicturaeInstaller\App\Install;
-use PicturaeInstaller\App\Status;
+use Grasmash\SymfonyConsoleSpinner\Spinner;
+use Grasmash\SymfonyConsoleSpinner\Checklist;
 
 #[AsCommand(
     name: 'install',
@@ -22,10 +20,16 @@ use PicturaeInstaller\App\Status;
 )]
 class InstallJoomlaCommand extends Command
 {
+    protected $install;
+    protected $versions;
+    protected $env;
+    protected $docker;
+
     public function __construct()
     {
         parent::__construct();
 
+        $this->docker   = Docker::init();
         $this->versions = Install::versions();
         $this->env      = new Env;
     }
@@ -42,55 +46,41 @@ class InstallJoomlaCommand extends Command
         $io         = new SymfonyStyle($input, $output);
         $output     = new ConsoleOutput();
         $checklist  = new Checklist($output);
-        $spinner    = new Spinner($output);
 
         // Let's go.
         $io->title('Awesome Joomla Tool');
 
         // Check if there is a .env file
         if(!$this->env::exists()) {
-            $io->error(
-                [
-                    'No .env file in this project.',
-                    'Copy the .env.example file, rename to .env and enter the correct project information.',
-                    'Then restart the installation with the command again.'
-                ]
-            );
+            $io->writeln('<fg=bright-white;bg=bright-red>No .env file in this project.</>');
+            $io->writeln('<fg=bright-white;bg=bright-red>Copy the .env.example file, rename to .env and enter the correct project information.</>');
+            $io->writeln('<fg=bright-white;bg=bright-red>Then restart the installation with the command again.</>');
             return Command::FAILURE;
         }
-
 
         // Start the installer
         $this->install  = new Install;
 
 
+
+
         // 1. Check if we are installing or updating
-        $spinner->setMessage('Checking for any Joomla installation');
-        $spinner->start();
-        if($action = $this->install::check()) {
-            $spinner->advance();
-        }
-        $spinner->finish();
+        $io->writeln('<fg=black;bg=white>> Checking for any Joomla installation.</>');
+        $action = $this->install::check();
 
         // 2. Install or update
         if($action === Status::UPDATE->value) {
-            $io->writeln('Joomla installation found.');
-            $io->section('Joomla updates');
+            $io->writeln('<fg=white;bg=green>✓ Joomla installation found.</>');
 
             // Check for updates
-            $checklist->addItem('Checking for updates');
+            $io->writeln('<fg=black;bg=white>> Checking for updates.</>');
             if($this->install::checkForUpdates()) {
-                $checklist->completePreviousItem();
-
-                // Update
                 system($this->install::update());
-
-                $io->success('Updates completed');
+                $io->writeln('<fg=white;bg=green>✓ Updates completed.</>');
             }
         }
         elseif($action === Status::INSTALL->value) {
-            $io->writeln('No Joomla installation found. Install.');
-            $io->section('Joomla installation');
+            $io->writeln('<fg=white;bg=yellow>! No Joomla installation found. Install.</>');
 
             // Download
             $checklist->addItem('Downloading Joomla');
@@ -105,16 +95,20 @@ class InstallJoomlaCommand extends Command
             }
 
             // Install
-            $io->writeln('Starting Joomla installer for version ' . reset($this->versions));
+            $checklist->addItem('Starting Joomla installer for version ' . reset($this->versions));
+            $checklist->completePreviousItem();
+
             system($this->install::install());
 
             // Installation completed
-            $io->success('Installation completed');
+            $io->writeln('<fg=white;bg=green>✓ Installation completed.</>');
+            return command::SUCCESS;
         }
         else {
-            $io->warning('We could not determine if you where updating or installing. Exit.');
+            $io->writeln('<fg=bright-white;bg=bright-red>We could not determine if you where updating or installing. Exit.</>');
             return Command::FAILURE;
         }
+
 
         // 3. -- Next step --
 

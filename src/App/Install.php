@@ -12,7 +12,8 @@ use PicturaeInstaller\App\Env;
  * Enums with versions that should be available within the installation
  */
 enum Versions: string {
-    case Latest     = '4.3.1';
+    case Latest         = '4.3.2';
+    case version431     = '4.3.1';
 }
 
 /**
@@ -21,6 +22,7 @@ enum Versions: string {
 enum Status: string {
     case UPDATE = 'update';
     case INSTALL = 'install';
+    case UNINSTALL = 'uninstall';
 }
 
 class Install
