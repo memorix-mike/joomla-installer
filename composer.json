@@ -24,5 +24,6 @@
             "PicturaeInstaller\\": "src/"
         }
     },
+    "minimum-stability": "dev",
     "bin": ["bin/joomla-installer.php"]
 }
