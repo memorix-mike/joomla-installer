@@ -23,13 +23,11 @@ class InstallJoomlaCommand extends Command
     protected $install;
     protected $versions;
     protected $env;
-    protected $docker;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->docker   = Docker::init();
         $this->versions = Install::versions();
         $this->env      = new Env;
     }

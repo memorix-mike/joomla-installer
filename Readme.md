@@ -1,8 +1,7 @@
 # Picturae Joomla Tool
 ***
-[![for-the-badge](http://poser.pugx.org/picturae-mike/joomla-installer/v?style=for-the-badge)](https://packagist.org/packages/picturae-mike/joomla) 
-[![for-the-badge](http://poser.pugx.org/picturae-mike/joomla-installer/require/php?style=for-the-badge)](https://packagist.org/packages/picturae-mike/joomla) 
-[![for-the-badge](http://poser.pugx.org/picturae-mike/joomla-installer/license?style=for-the-badge)](https://packagist.org/packages/picturae-mike/joomla) 
+[![for-the-badge](http://poser.pugx.org/picturae-mike/joomla-installer/v?style=for-the-badge)](https://packagist.org/packages/picturae-mike/joomla-installer) 
+[![for-the-badge](http://poser.pugx.org/picturae-mike/joomla-installer/license?style=for-the-badge)](https://packagist.org/packages/picturae-mike/joomla-installer) 
 
 This Joomla tool handles a set-up of a Docker container and creates a fresh install of Joomla V4 or updates the current version to the latest version.
 
