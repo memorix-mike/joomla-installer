@@ -11,7 +11,7 @@ class Template
     public static $templateFolder;
     public static $destinationFolder;
     public static $templateDirectory;
-    public static $baseTemplateFolder = 'src/Template/starter-template';
+    public static $baseTemplateFolder = 'Template/starter-template';
 
     public function __construct($destinationFolder)
     {
