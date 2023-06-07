@@ -72,7 +72,7 @@ class Install
      */
     public static function check(): string
     {
-        if(file_exists('./installation/configuration.php')) {
+        if(file_exists('./public/configuration.php')) {
             return Status::UPDATE->value;
         }
 
