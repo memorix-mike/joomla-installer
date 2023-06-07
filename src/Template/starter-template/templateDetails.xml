@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="template" client="site">
 	<name>${template_name}</name>
-	<version>1.0</version>
-	<creationDate>2017-02</creationDate>
-	<author>Joomla! Project</author>
-	<authorEmail>admin@joomla.org</authorEmail>
-	<copyright>(C) 2017 Open Source Matters, Inc.</copyright>
-	<description>TPL_CASSIOPEIA_XML_DESCRIPTION</description>
-	<inheritable>1</inheritable>
+	<version>${template_version}</version>
+	<creationDate>${template_creation_date}</creationDate>
+	<author>Picturae</author>
+	<authorEmail>contact@picturae.com</authorEmail>
+	<authorUrl>https://picturae.com</authorUrl>
+	<copyright>(C) 2023 Picturae. All rights reserved.</copyright>
+	<description>${template_description}</description>
 	<files>
 		<filename>component.php</filename>
 		<filename>error.php</filename>
