@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace PicturaeInstaller\App;
 
@@ -23,6 +24,7 @@ class InstallJoomlaCommand extends Command
     protected $install;
     protected $versions;
     protected $env;
+    protected $template;
 
     public function __construct()
     {
@@ -60,8 +62,6 @@ class InstallJoomlaCommand extends Command
         $this->install  = new Install;
 
 
-
-
         // 1. Check if we are installing or updating
         $io->writeln('<fg=black;bg=white>> Checking for any Joomla installation.</>');
         $action = $this->install::check();
@@ -69,6 +69,8 @@ class InstallJoomlaCommand extends Command
         // 2. Install or update
         if($action === Status::UPDATE->value) {
             $io->writeln('<fg=white;bg=green>✓ Joomla installation found.</>');
+
+            $io->section('Update');
 
             // Check for updates
             $io->writeln('<fg=black;bg=white>> Checking for updates.</>');
@@ -78,7 +80,9 @@ class InstallJoomlaCommand extends Command
             }
         }
         elseif($action === Status::INSTALL->value) {
-            $io->writeln('<fg=white;bg=yellow>! No Joomla installation found. Install.</>');
+            $io->writeln('<fg=white;bg=yellow>! No Joomla installation found.</>');
+
+            $io->section('Install');
 
             // Download
             $checklist->addItem('Downloading Joomla');
@@ -100,6 +104,33 @@ class InstallJoomlaCommand extends Command
 
             // Installation completed
             $io->writeln('<fg=white;bg=green>✓ Installation completed.</>');
+
+
+            // Setup.
+            $io->section('Setup');
+
+            // Move the installation folder to a public folder
+            $checklist->addItem('Moving installation folder');
+            if($destinationFolder = $this->install::move()) {
+                $checklist->completePreviousItem();
+            }
+
+            // Start the template installer
+            $this->template  = new Template($destinationFolder);
+
+            $checklist->addItem('Installing a base template');
+            if($templateDirectory = $this->template::create()) {
+                $checklist->completePreviousItem();
+            }
+
+            // Symlink the template
+            $checklist->addItem('Symlinking the base template');
+            if($this->template::symlink()) {
+                $checklist->completePreviousItem();
+            }
+
+            $io->writeln('<fg=white;bg=green>✓ Setup completed.</>');
+
             return command::SUCCESS;
         }
         else {
@@ -107,11 +138,6 @@ class InstallJoomlaCommand extends Command
             return Command::FAILURE;
         }
 
-
-        // 3. -- Next step --
-
-
         return command::SUCCESS;
     }
-
 }

@@ -9,7 +9,7 @@ use ZipArchive;
 use PicturaeInstaller\App\Env;
 
 /**
- * Enums with versions that should be available within the installation
+ * Version enums
  */
 enum Versions: string {
     case Latest         = '4.3.2';
@@ -17,16 +17,18 @@ enum Versions: string {
 }
 
 /**
- *
+ * Status enums
  */
 enum Status: string {
-    case UPDATE = 'update';
-    case INSTALL = 'install';
-    case UNINSTALL = 'uninstall';
+    case UPDATE         = 'update';
+    case INSTALL        = 'install';
+    case UNINSTALL      = 'uninstall';
 }
 
 class Install
 {
+    public static string $installationFolder = './installation';
+
     public function __construct()
     {
         // Load Dotenv for environmental variables
@@ -83,7 +85,7 @@ class Install
      * @param $version
      * @return string
      */
-    public static function download($version = null)
+    public static function download($version = null): string
     {
         $source         = self::versionUrl($version);
         $destination    = 'joomla-' . $version . '.zip';
@@ -102,7 +104,7 @@ class Install
     public static function unzip(string $file)
     {
         $zip = new ZipArchive;
-        if ($zip->open($file) === TRUE) {
+        if ($zip->open($file) === true) {
 
             // Remove the old installation folder if present0
             system('rm -rf -- ' . escapeshellarg('./installation'));
@@ -138,7 +140,6 @@ class Install
      */
     public static function installArguments(): array
     {
-
         return [
             '--site-name'       => getenv('SITE_NAME'),
             '--admin-user'      => getenv('ADMIN_USER'),
@@ -155,21 +156,44 @@ class Install
         ];
     }
 
+    /**
+     * Check for Joomla updates with Joomla CLI
+     *
+     * @return string
+     */
     public static function checkForUpdates()
     {
         return 'php ./installation/cli/joomla.php core:check-updates';
     }
 
-
+    /**
+     * Update Joomla to the latest version with Joomla CLI
+     *
+     * @return string
+     */
     public static function update()
     {
         return 'php ./installation/cli/joomla.php core:update';
     }
 
-    public static function move()
+    /**
+     * Move the installation folder to public
+     *
+     * @return void
+     */
+    public static function move(): string|bool
     {
-        dd('moved files');
-        return '';
+        $destinationFolder = getenv('TEMPLATE_TARGET');
+
+        if($destinationFolder == "" || !isset($destinationFolder)) {
+            $destinationFolder = './public';
+        }
+
+        if(!rename(self::$installationFolder, $destinationFolder)) {
+            return false;
+        }
+
+        return $destinationFolder;;
     }
 
 }

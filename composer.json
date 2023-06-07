@@ -16,8 +16,8 @@
         "php": ">8.0",
         "symfony/console": "^6",
         "vlucas/phpdotenv": "^5.5",
-        "phpunit/phpunit": "^10.1",
-        "grasmash/symfony-console-spinner": "dev-main"
+        "grasmash/symfony-console-spinner": "dev-main",
+        "symfony/filesystem": "6.1"
     },
     "autoload": {
         "psr-4": {

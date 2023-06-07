@@ -9,11 +9,11 @@ This Joomla tool handles a set-up of a Docker container and creates a fresh inst
 
 ## Requirements ##
 
-|              |       Version |
-|:-------------|--------------:|
-| **PHP**      | ``7.4 - 8.2`` |
-| **Composer** |      ``V2.0`` |
-| **Node**     |     ``V16.0`` |
+|              |   Version |
+|:-------------|----------:|
+| **PHP**      | ``> 8.0`` |
+| **Composer** |  ``V2.0`` |
+| **Node**     | ``V16.0`` |
 
 ## Installation ##
 1. Rename ``.env.example`` to ``.env``
@@ -23,7 +23,7 @@ This Joomla tool handles a set-up of a Docker container and creates a fresh inst
 This command will create a new Docker container with pre-defined information.
 Docker will automatically run ``$ composer install`` to install this installer.
 
-## Run the installer ##
+## Run the installer (manually) ##
 ```php vendor/bin/console picturae:install```
 
 ## Installation flow ##
@@ -39,3 +39,29 @@ Docker will automatically run ``$ composer install`` to install this installer.
    2. **Update**
       1. Update the current version with Joomla-CLI 
 2. Finalizing, ``$ docker up`` and serve the website under ``https://website-name.test`` 
+
+
+## Template stucture ##
+If this is a new install of the website, this script also creates a ``starter-template`` with a basic setup.
+The information for this starter-temlate will be fetched from the .env file as used during installation.
+
+```
+/${BUILD_TARGET}
+   /administrator
+   /components
+   /language
+   /modules
+   /plugins
+   /templates
+      /${TEMPLATE_NAME}
+         ...
+         ... // front-end structure for Vite.js
+```
+
+In order to make the starter-template work with the Joomla installation,
+we create a ``symlink`` from ``./public/templates`` to 
+``./${BUILD_TARGET}/templates/${TEMPLATE_NAME}``.
+
+
+## Available packages for Joomla 4 ##
+No packages available (yet).
