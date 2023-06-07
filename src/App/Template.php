@@ -31,8 +31,8 @@ class Template
 
     public static function create()
     {
-        // Define the base template
-        $baseTemplateLocation = getcwd() . '/' . self::$baseTemplateFolder;
+        /// Define the base template
+        $baseTemplateLocation = dirname(__FILE__) . '/../' . self::$baseTemplateFolder;
 
         // Define the templateDirectory
         self::$templateDirectory = getcwd() . '/' . str_replace('./', '', self::$templateFolder) . '/' . self::$templateName;
