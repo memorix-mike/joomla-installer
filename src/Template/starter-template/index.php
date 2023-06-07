@@ -10,10 +10,14 @@
 
 defined('_JEXEC') or die;
 
+include_once('../functions/functions.php');
+
 use Joomla\CMS\Factory;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri;
+
+var_dump(asset()); exit;
 
 /** @var Joomla\CMS\Document\HtmlDocument $this */
 

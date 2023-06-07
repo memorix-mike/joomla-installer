@@ -27,6 +27,7 @@ class Template
     public static string $destinationFolder;
     public static string $templateDirectory;
     public static string $baseTemplateFolder = 'Template/starter-template';
+    public static string $baseFunctionsFolder = 'Template/functions';
     public static string $baseTemplateLocation;
     public static string $templateDescription = 'Custom Joomla template for ';
 
@@ -64,6 +65,9 @@ class Template
         self::createLanguages();
         self::createModules();
         self::createPlugins();
+
+        // Global functions
+        self::createFunctions();
 
         // Replace the .xml file
         self::newTemplateDetails();
@@ -105,6 +109,26 @@ class Template
     private static function createPlugins()
     {
         mkdir(self::$templateDirectory . '/../../plugins', 0755);
+    }
+
+    private static function createFunctions()
+    {
+        mkdir(self::$templateDirectory . '/../../functions', 0755);
+
+//        var_dump([
+//            'source'        => dirname(__DIR__, 1) . '/' . self::$baseFunctionsFolder .'/functions.php',
+//            'destination'   => self::$templateDirectory . '/../../functions/functions.php'
+//        ]); exit;
+
+
+        // Create and write functions.php
+        $filesystem = new Filesystem();
+        $filesystem->copy(
+            dirname(__DIR__, 1) . '/' . self::$baseFunctionsFolder .'/functions.php',
+            self::$templateDirectory . '/../../functions/functions.php'
+        );
+
+
     }
 
     private static function newTemplateDetails()

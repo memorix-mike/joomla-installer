@@ -159,11 +159,18 @@ class Install
     /**
      * Check for Joomla updates with Joomla CLI
      *
-     * @return string
+     * @return string|bool
      */
-    public static function checkForUpdates()
+    public static function checkForUpdates(): string|bool
     {
-        return 'php ./installation/cli/joomla.php core:check-updates';
+        if(file_exists('./installation/cli/joomla.php')) {
+            return 'php ./installation/cli/joomla.php core:check-updates';
+        }
+        elseif(file_exists('./public/cli/joomla.php')) {
+            return 'php ./public/cli/joomla.php core:check-updates';
+        }
+
+        return false;
     }
 
     /**
@@ -173,7 +180,14 @@ class Install
      */
     public static function update()
     {
-        return 'php ./installation/cli/joomla.php core:update';
+        if(file_exists('./installation/cli/joomla.php')) {
+            return 'php ./installation/cli/joomla.php core:update';
+        }
+        elseif(file_exists('./public/cli/joomla.php')) {
+            return 'php ./public/cli/joomla.php core:update';
+        }
+
+        return false;
     }
 
     /**
