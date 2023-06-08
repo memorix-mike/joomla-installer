@@ -117,9 +117,9 @@ class Template
 
         // Create and write _loader.php
         $filesystem = new Filesystem();
-        $filesystem->copy(
-            dirname(__DIR__, 1) . '/' . self::$baseFunctionsFolder .'/_loader.php',
-            self::$templateDirectory . '/../../functions/_loader.php'
+        $filesystem->mirror(
+            dirname(__DIR__, 1) . '/' . self::$baseFunctionsFolder,
+            self::$templateDirectory . '/../../functions'
         );
     }
 
