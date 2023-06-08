@@ -40,6 +40,13 @@ Docker will automatically run ``$ composer install`` to install this installer.
       1. Update the current version with Joomla-CLI 
 2. Finalizing, ``$ docker up`` and serve the website under ``https://website-name.test`` 
 
+## Building the assets (test) ##
+```cd src/templates/${TEMPLATE_FOLDER}```
+
+```npm install```
+
+```npm run build```
+
 
 ## Template stucture ##
 If this is a new install of the website, this script also creates a ``starter-template`` with a basic setup.
