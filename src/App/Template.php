@@ -115,20 +115,12 @@ class Template
     {
         mkdir(self::$templateDirectory . '/../../functions', 0755);
 
-//        var_dump([
-//            'source'        => dirname(__DIR__, 1) . '/' . self::$baseFunctionsFolder .'/functions.php',
-//            'destination'   => self::$templateDirectory . '/../../functions/functions.php'
-//        ]); exit;
-
-
-        // Create and write functions.php
+        // Create and write _loader.php
         $filesystem = new Filesystem();
         $filesystem->copy(
-            dirname(__DIR__, 1) . '/' . self::$baseFunctionsFolder .'/functions.php',
-            self::$templateDirectory . '/../../functions/functions.php'
+            dirname(__DIR__, 1) . '/' . self::$baseFunctionsFolder .'/_loader.php',
+            self::$templateDirectory . '/../../functions/_loader.php'
         );
-
-
     }
 
     private static function newTemplateDetails()

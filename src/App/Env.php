@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace PicturaeInstaller\App;
 
-use Dotenv\Dotenv;
-
 class Env
 {
     public static string $projectPath;

@@ -76,6 +76,9 @@ class InstallJoomlaCommand extends Command
             $io->writeln('<fg=black;bg=white>> Checking for updates.</>');
             if($this->install::checkForUpdates()) {
                 system($this->install::update());
+
+                // copy the new functions from /Template/functions aswell
+
                 $io->writeln('<fg=white;bg=green>✓ Updates completed.</>');
             }
         }

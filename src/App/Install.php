@@ -3,10 +3,8 @@ declare(strict_types=1);
 
 namespace PicturaeInstaller\App;
 
-use Dotenv\Dotenv;
 use ZipArchive;
-
-use PicturaeInstaller\App\Env;
+use Dotenv\Dotenv;
 
 /**
  * Version enums
@@ -32,7 +30,7 @@ class Install
     public function __construct()
     {
         // Load Dotenv for environmental variables
-        Dotenv::createUnsafeImmutable('./')->load();
+        Dotenv\Dotenv::createUnsafeImmutable('./')->load();
     }
 
     /**
