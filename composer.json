@@ -5,7 +5,7 @@
     "keywords": ["joomla", "cli", "docker", "tools"],
     "homepage": "https://github.com/picturae-mike/joomla-installer",
     "license": "MIT",
-    "version": "0.4.1",
+    "version": "0.4.9",
     "authors": [
         {
             "name": "Picturae",
