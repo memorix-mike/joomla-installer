@@ -245,8 +245,9 @@ class InstallJoomlaCommand extends Command
                     $checklist->completePreviousItem();
                 }
 
-                var_dump('just symlink the current template, that\'s it');
-                exit;
+                // Cleanup of the template
+                // Add Vite for building the assets...
+                // Build the website
             }
 
             $io->writeln('<fg=white;bg=green>✓ Setup completed!</>');
