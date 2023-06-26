@@ -21,17 +21,23 @@ use Grasmash\SymfonyConsoleSpinner\Checklist;
 )]
 class InstallJoomlaCommand extends Command
 {
-    protected $install;
-    protected $versions;
-    protected $env;
-    protected $template;
+    protected Install $install;
+    protected Upgrade $upgrade;
+    protected Backup $backup;
+    protected Database $database;
+
+    protected array $versions;
+    protected Env $env;
+    protected Template $template;
+    protected string $upgradeVersion;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->versions = Install::versions();
-        $this->env      = new Env;
+        $this->versions         = Install::versions();
+        $this->upgradeVersion   = '3.10.11';
+        $this->env              = new Env;
     }
 
     protected function configure(): void
@@ -60,6 +66,9 @@ class InstallJoomlaCommand extends Command
 
         // Start the installer
         $this->install  = new Install;
+        $this->upgrade  = new Upgrade;
+        $this->backup   = new Backup;
+        $this->database = new Database;
 
 
         // 1. Check if we are installing or updating
@@ -68,23 +77,122 @@ class InstallJoomlaCommand extends Command
 
         // 2. Install or update
         if($action === Status::UPDATE->value) {
+
             $io->writeln('<fg=white;bg=green>✓ Joomla installation found.</>');
 
             $io->section('Update');
 
-            // Check for updates
-            $io->writeln('<fg=black;bg=white>> Checking for updates.</>');
-            if($this->install::checkForUpdates()) {
-                system($this->install::update());
+            $currentVersion = $this->upgrade::getCurrentVersion();
+            if($currentVersion) {
+                $io->writeln('<fg=black;bg=white>> Current version is ' . $currentVersion . '.</>');
 
-                // copy the new functions from /Template/functions aswell
+                // Backup configuration.php
+                if ($this->backup::configuration()) {
+                    $io->writeln('<fg=black;bg=cyan>✓ Configuration backup created.</>');
+                }
 
-                $io->writeln('<fg=white;bg=green>✓ Updates completed.</>');
+                // Backup database
+                if ($this->database::dump()) {
+                    $io->writeln('<fg=black;bg=cyan>✓ Database backup created.</>');
+                }
+
+                // Check if the latest stable pre-upgrade version is already installed
+                if ($currentVersion !== $this->upgradeVersion) {
+
+                    $checklist->addItem('Downloading Joomla upgrade package to 3.10.11');
+                    if ($file = $this->upgrade::download($this->upgradeVersion)) {
+                        $checklist->completePreviousItem();
+
+                        // Unzip
+                        $checklist->addItem('Unzipping Joomla upgrade package to /upgrade');
+                        if ($this->upgrade::unzip($file, 'upgrade')) {
+                            $checklist->completePreviousItem();
+                        }
+
+                        // Move ./upgrade to ./public
+                        $io->writeln('<fg=white;bg=green>✓ Upgraded to Joomla ' . $this->upgradeVersion . '.</>');
+                    }
+                }
+            }
+
+            /**
+             * Upgrade Joomla 3.10.11 to Joomla 4.0
+             *
+             */
+            if(intval($currentVersion) === 3) {
+                $io->writeln('<fg=black;bg=white>> Upgrading to version 4.0.0</>');
+
+                $checklist->addItem('Downloading Joomla upgrade package to 4.0.0');
+                if($file = $this->upgrade::download('4.0.0')) {
+                    $checklist->completePreviousItem();
+
+                    // Unzip
+                    $checklist->addItem('Unzipping Joomla 4.0.0');
+                    if($this->upgrade::unzip($file, 'upgrade')) {
+                        $checklist->completePreviousItem();
+                    }
+
+                    // Move
+                    $checklist->addItem('Moving Joomla 4.0.0');
+                    if($this->upgrade::move()) {
+                        $checklist->completePreviousItem();
+                    }
+
+                    // Restore configuration file
+                    $checklist->addItem('Restoring configuration file from backup');
+                    if($this->backup::restoreConfiguration()) {
+                        $checklist->completePreviousItem();
+                    }
+
+                    // Run the database fix
+                    $checklist->addItem('Running database fix');
+                    if($this->database::fix()) {
+                        $checklist->completePreviousItem();
+                    }
+
+                    // Switch PHP
+//                    system('brew link php@8.0 --force && composer global update');
+
+                    // Install
+                    system($this->upgrade::install());
+
+                    // Re-symlink the template
+                    $checklist->addItem('Re-symlink the template');
+                    if($this->upgrade::symlink()) {
+                        $checklist->completePreviousItem();
+                    }
+
+                    // Remove the cached files
+                    $checklist->addItem('Remove cache');
+                    if($this->upgrade::removeCache()) {
+                        $checklist->completePreviousItem();
+                    }
+
+                    $io->writeln('<fg=white;bg=green>✓ Update to Joomla 4.* completed.</>');
+
+                    return command::SUCCESS;
+                }
+            }
+            else {
+                /**
+                 * Also need to check here if the current version was 4.* or maybe even lower...
+                 * @todo check for version for Joomla 4.* sites...
+                 */
+
+                // Check for updates
+                $io->writeln('<fg=black;bg=white>> Checking for Joomla 4.* updates.</>');
+                if($this->install::checkForUpdates()) {
+                    system($this->install::update());
+
+                    // copy the new functions from /Template/functions aswell
+
+                    $io->writeln('<fg=white;bg=green>✓ Updates completed.</>');
+                }
             }
         }
         elseif($action === Status::INSTALL->value) {
-            $io->writeln('<fg=white;bg=yellow>! No Joomla installation found.</>');
 
+            $io->writeln('<fg=white;bg=yellow>! No Joomla installation found.</>');
             $io->section('Install');
 
             // Download
@@ -94,7 +202,7 @@ class InstallJoomlaCommand extends Command
 
                 // Unzip
                 $checklist->addItem('Unzipping Joomla');
-                if($this->install::unzip($file)) {
+                if($this->install::unzip($file, 'installation')) {
                     $checklist->completePreviousItem();
                 }
             }

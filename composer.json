@@ -21,7 +21,10 @@
         "vlucas/phpdotenv": "dev-master",
         "grasmash/symfony-console-spinner": "dev-main",
         "symfony/filesystem": "6.1",
-        "composer/composer": "2.6.x-dev"
+        "composer/composer": "2.6.x-dev",
+        "nesbot/carbon": "3.x-dev",
+        "ext-mysqli": "*",
+        "ifsnop/mysqldump-php": "dev-master"
     },
     "autoload": {
         "psr-4": {

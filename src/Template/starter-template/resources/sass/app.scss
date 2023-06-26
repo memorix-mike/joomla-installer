@@ -1,4 +1,11 @@
-html {}
+$light: #F5F5F5;
+
+html {
+  background-color: $light;
+}
 
 html,
-body {}
+body {
+  font-family: "Helvetica",sans-serif;
+  background-color: $light;
+}

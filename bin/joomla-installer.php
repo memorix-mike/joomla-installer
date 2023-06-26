@@ -14,8 +14,6 @@ if (!is_file($root_app . '/vendor/autoload.php')) {
 require_once $root_app . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
-use Joomla\CMS\Installation\Console\InstallCommand;
-
 use PicturaeInstaller\App\InstallJoomlaCommand;
 
 $app = new Application();

@@ -9,11 +9,11 @@ This Joomla tool handles a set-up of a Docker container and creates a fresh inst
 
 ## Requirements ##
 
-|              |   Version |
-|:-------------|----------:|
-| **PHP**      | ``> 8.0`` |
-| **Composer** |  ``V2.0`` |
-| **Node**     | ``V16.0`` |
+|              |       Version |
+|:-------------|--------------:|
+| **PHP**      | ``7.4 - 8.1`` |
+| **Composer** |      ``V2.0`` |
+| **Node**     |     ``V16.0`` |
 
 ## Installation ##
 1. Rename ``.env.example`` to ``.env``

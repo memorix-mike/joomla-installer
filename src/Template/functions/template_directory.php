@@ -8,6 +8,9 @@ declare(strict_types=1);
  * @return string
  */
 function get_template_directory() {
+    return $_SERVER['DOCUMENT_ROOT'] . '/templates/' . getenv('TEMPLATE_NAME');
+}
 
-    return $dir = getcwd() . '/templates/' . getenv('TEMPLATE_NAME');
+function get_public_template_path() {
+    return $_SERVER['DOCUMENT_ROOT'] . '/templates/' . getenv('TEMPLATE_NAME');
 }

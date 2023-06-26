@@ -1,12 +1,14 @@
 {
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
+    "watch": "vite build --watch",
     "preview": "vite preview"
   },
   "dependencies": {
-    "laravel-vite-plugin": "^0.7.8",
-    "vite": "^4.3.9"
+    "vite": "^4.3.9",
+    "path": "^0.12.7",
+    "vite-plugin-eslint": "^1.8.1"
   },
   "devDependencies": {
     "sass": "^1.63.2"

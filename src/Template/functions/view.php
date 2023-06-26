@@ -13,8 +13,8 @@ declare(strict_types=1);
 function view(string $name, array $variables = [], bool $return = false)
 {
     $output = null;
-    $views_dir = 'views';
-    $paths = explode('.',$name);
+    $views_dir = 'resources' . DIRECTORY_SEPARATOR . 'views';
+    $paths = explode('.', $name);
 
     if($views_dir == $paths[0]) {
         unset($paths[0]);
@@ -22,12 +22,10 @@ function view(string $name, array $variables = [], bool $return = false)
 
     array_unshift($paths, $views_dir);
 
-    $path = implode('/', $paths);
-    $path = get_template_directory() . '/' . $path . '.php';
+    $path = implode(DIRECTORY_SEPARATOR, $paths);
+    $path = get_template_directory() . DIRECTORY_SEPARATOR . $path . '.php';
 
-//    dd($path);
-
-    if(file_Exists($path)) {
+    if(file_exists($path)) {
         if($return) {
             return include $path;
         }

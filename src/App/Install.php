@@ -6,8 +6,6 @@ namespace PicturaeInstaller\App;
 use Dotenv\Dotenv;
 use ZipArchive;
 
-use PicturaeInstaller\App\Env;
-
 /**
  * Version enums
  */
@@ -22,16 +20,54 @@ enum Versions: string {
 enum Status: string {
     case UPDATE         = 'update';
     case INSTALL        = 'install';
+    case UPGRADE        = 'upgrade';
     case UNINSTALL      = 'uninstall';
 }
 
 class Install
 {
     public static string $installationFolder = './installation';
+    public static string $currentVersion;
 
     public function __construct()
     {
         Dotenv::createUnsafeImmutable('./')->load();
+    }
+
+    /**
+     * Check if this is a new installation or an update
+     *
+     * @return \Status
+     */
+    public static function check(): string
+    {
+        if(file_exists('./public/configuration.php')) {
+            return Status::UPDATE->value;
+        }
+
+        return Status::INSTALL->value;
+    }
+
+    /**
+     * Get the current version of the installed version
+     *
+     * @return string|bool
+     */
+    public static function getCurrentVersion(): string|null
+    {
+        try {
+            $versionFile = @file_get_contents(getenv('SITE_URL') . '/language/en-GB/en-GB.xml');
+
+            if($versionFile) {
+                if(preg_match('/<version>(.*?)<\/version>/', $versionFile, $version)) {
+                    return $version[1];
+                }
+            }
+        } catch(\Exception $exception) {
+            return null;
+        }
+
+        return null;
     }
 
     /**
@@ -50,32 +86,14 @@ class Install
     }
 
     /**
-     * Get the version Url based on the selected version
+     * Get the version Url
      *
      * @param $version
      * @return string
      */
     private static function versionUrl($version)
     {
-        switch($version) {
-            case Versions::Latest->value:
-            default:
-                return 'https://downloads.joomla.org/cms/joomla4/4-3-1/Joomla_4-3-1-Stable-Full_Package.zip';
-        }
-    }
-
-    /**
-     * Check if this is a new installation or an update
-     *
-     * @return \Status
-     */
-    public static function check(): string
-    {
-        if(file_exists('./public/configuration.php')) {
-            return Status::UPDATE->value;
-        }
-
-        return Status::INSTALL->value;
+        return 'https://downloads.joomla.org/cms/joomla4/4-3-2/Joomla_4-3-2-Stable-Full_Package.zip';
     }
 
     /**
@@ -100,15 +118,16 @@ class Install
      * @param string $file
      * @return bool
      */
-    public static function unzip(string $file)
+    public static function unzip(string $file, string $location): bool
     {
         $zip = new ZipArchive;
         if ($zip->open($file) === true) {
 
-            // Remove the old installation folder if present0
-            system('rm -rf -- ' . escapeshellarg('./installation'));
+            // Remove the old location folder
+            system('rm -rf -- ' . escapeshellarg('./' . $location));
 
-            $zip->extractTo('./installation/');
+            // Extract to location folder
+            $zip->extractTo('./' . $location . '/');
             $zip->close();
 
             return true;
@@ -206,7 +225,6 @@ class Install
             return false;
         }
 
-        return $destinationFolder;;
+        return $destinationFolder;
     }
-
 }
