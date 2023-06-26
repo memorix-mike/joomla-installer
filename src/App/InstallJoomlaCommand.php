@@ -48,7 +48,8 @@ class InstallJoomlaCommand extends Command
     {
         $this->setName('picturae:install')
             ->setDescription('This command runs your custom task')
-            ->setHelp('Run this command to execute your custom tasks in the execute function.');
+            ->setHelp('Run this command to execute your custom tasks in the execute function.')
+            ->addOption('template', 't', null, 'Also create a template during installation', null);
     }
 
     /**
@@ -223,21 +224,32 @@ class InstallJoomlaCommand extends Command
                 $checklist->completePreviousItem();
             }
 
-            // Start the template installer
+            // 2.1 TEMPLATE
             $this->template  = new Template($destinationFolder);
 
-            $checklist->addItem('Installing a base template');
-            if($templateDirectory = $this->template::create()) {
-                $checklist->completePreviousItem();
+            if($input->getOption('template')) {
+                $checklist->addItem('Installing a base template');
+                if($templateDirectory = $this->template::create()) {
+                    $checklist->completePreviousItem();
+                }
+
+                // Symlink the template
+                $checklist->addItem('Symlinking the base template');
+                if($this->template::symlink()) {
+                    $checklist->completePreviousItem();
+                }
+            }
+            else {
+                $checklist->addItem('Symlinking the customer template');
+                if($this->template::symlink()) {
+                    $checklist->completePreviousItem();
+                }
+
+                var_dump('just symlink the current template, that\'s it');
+                exit;
             }
 
-            // Symlink the template
-            $checklist->addItem('Symlinking the base template');
-            if($this->template::symlink()) {
-                $checklist->completePreviousItem();
-            }
-
-            $io->writeln('<fg=white;bg=green>✓ Setup completed, happy creating!</>');
+            $io->writeln('<fg=white;bg=green>✓ Setup completed!</>');
 
             return command::SUCCESS;
         }
