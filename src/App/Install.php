@@ -91,7 +91,7 @@ class Install
      * @param $version
      * @return string
      */
-    private static function versionUrl($version)
+    private static function versionUrl($version): string
     {
         return 'https://downloads.joomla.org/cms/joomla4/4-3-2/Joomla_4-3-2-Stable-Full_Package.zip';
     }
@@ -116,6 +116,7 @@ class Install
      * Unzip the downloaded version of Joomla
      *
      * @param string $file
+     * @param string $location
      * @return bool
      */
     public static function unzip(string $file, string $location): bool
@@ -141,7 +142,7 @@ class Install
      *
      * @return string
      */
-    public static function install()
+    public static function install(): string
     {
         $args = '';
         foreach(self::installArguments() as $key => $value) {
@@ -194,9 +195,9 @@ class Install
     /**
      * Update Joomla to the latest version with Joomla CLI
      *
-     * @return string
+     * @return string|bool
      */
-    public static function update()
+    public static function update(): string|bool
     {
         if(file_exists('./installation/cli/joomla.php')) {
             return 'php ./installation/cli/joomla.php core:update';
@@ -211,7 +212,7 @@ class Install
     /**
      * Move the installation folder to public
      *
-     * @return void
+     * @return string|bool
      */
     public static function move(): string|bool
     {

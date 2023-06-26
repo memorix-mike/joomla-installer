@@ -47,7 +47,12 @@ class Template
         self::$destinationFolder    = $destinationFolder;
     }
 
-    public static function create()
+    /**
+     * Create a starter-template
+     *
+     * @return string
+     */
+    public static function create(): string
     {
         /// Define the base template
         self::$baseTemplateLocation = dirname(__DIR__, 1) . '/' . self::$baseTemplateFolder;
@@ -75,7 +80,12 @@ class Template
         return self::$templateDirectory;
     }
 
-    public static function symlink()
+    /**
+     * Symlink the starter-template to /templates folder
+     *
+     * @return bool
+     */
+    public static function symlink(): bool
     {
         symlink(
             getcwd() . '/' . self::$templateFolder . '/templates/' . self::$templateName,
@@ -85,32 +95,61 @@ class Template
         return true;
     }
 
-
+    /**
+     * Create /administrator folder
+     *
+     * @return void
+     */
     private static function createAdministrator()
     {
         mkdir(self::$templateDirectory . '/../../administrator', 0755);
     }
 
+    /**
+     * Create /components folder
+     *
+     * @return void
+     */
     private static function createComponents()
     {
         mkdir(self::$templateDirectory . '/../../components', 0755);
     }
 
+    /**
+     * Create /languages folder
+     *
+     * @return void
+     */
     private static function createLanguages()
     {
         mkdir(self::$templateDirectory . '/../../languages', 0755);
     }
 
+    /**
+     * Create /modules folder
+     *
+     * @return void
+     */
     private static function createModules()
     {
         mkdir(self::$templateDirectory . '/../../modules', 0755);
     }
 
+    /**
+     * Create /plugins folder
+     *
+     * @return void
+     */
     private static function createPlugins()
     {
         mkdir(self::$templateDirectory . '/../../plugins', 0755);
     }
 
+    /**
+     * Create /functions folder
+     *
+     * @return void
+     */
     private static function createFunctions()
     {
         mkdir(self::$templateDirectory . '/../../functions', 0755);
@@ -123,6 +162,11 @@ class Template
         );
     }
 
+    /**
+     * Create a .xml file with the starter-template details
+     *
+     * @return bool
+     */
     private static function newTemplateDetails()
     {
         $file           = self::$templateDirectory . '/' . 'templateDetails.xml';

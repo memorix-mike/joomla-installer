@@ -25,7 +25,6 @@ class InstallJoomlaCommand extends Command
     protected Upgrade $upgrade;
     protected Backup $backup;
     protected Database $database;
-
     protected array $versions;
     protected Env $env;
     protected Template $template;
@@ -40,6 +39,11 @@ class InstallJoomlaCommand extends Command
         $this->env              = new Env;
     }
 
+    /**
+     * Configuration of the command
+     *
+     * @return void
+     */
     protected function configure(): void
     {
         $this->setName('picturae:install')
@@ -47,6 +51,13 @@ class InstallJoomlaCommand extends Command
             ->setHelp('Run this command to execute your custom tasks in the execute function.');
     }
 
+    /**
+     * Execute the command
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io         = new SymfonyStyle($input, $output);
@@ -70,7 +81,6 @@ class InstallJoomlaCommand extends Command
         $this->backup   = new Backup;
         $this->database = new Database;
 
-
         // 1. Check if we are installing or updating
         $io->writeln('<fg=black;bg=white>> Checking for any Joomla installation.</>');
         $action = $this->install::check();
@@ -80,7 +90,7 @@ class InstallJoomlaCommand extends Command
 
             $io->writeln('<fg=white;bg=green>✓ Joomla installation found.</>');
 
-            $io->section('Update');
+            $io->section('Upgrade');
 
             $currentVersion = $this->upgrade::getCurrentVersion();
             if($currentVersion) {
@@ -109,7 +119,6 @@ class InstallJoomlaCommand extends Command
                             $checklist->completePreviousItem();
                         }
 
-                        // Move ./upgrade to ./public
                         $io->writeln('<fg=white;bg=green>✓ Upgraded to Joomla ' . $this->upgradeVersion . '.</>');
                     }
                 }
@@ -117,7 +126,6 @@ class InstallJoomlaCommand extends Command
 
             /**
              * Upgrade Joomla 3.10.11 to Joomla 4.0
-             *
              */
             if(intval($currentVersion) === 3) {
                 $io->writeln('<fg=black;bg=white>> Upgrading to version 4.0.0</>');
@@ -150,10 +158,7 @@ class InstallJoomlaCommand extends Command
                         $checklist->completePreviousItem();
                     }
 
-                    // Switch PHP
-//                    system('brew link php@8.0 --force && composer global update');
-
-                    // Install
+                    // Install the upgrade
                     system($this->upgrade::install());
 
                     // Re-symlink the template
@@ -162,7 +167,7 @@ class InstallJoomlaCommand extends Command
                         $checklist->completePreviousItem();
                     }
 
-                    // Remove the cached files
+                    // Remove cached files
                     $checklist->addItem('Remove cache');
                     if($this->upgrade::removeCache()) {
                         $checklist->completePreviousItem();
@@ -174,17 +179,10 @@ class InstallJoomlaCommand extends Command
                 }
             }
             else {
-                /**
-                 * Also need to check here if the current version was 4.* or maybe even lower...
-                 * @todo check for version for Joomla 4.* sites...
-                 */
-
                 // Check for updates
                 $io->writeln('<fg=black;bg=white>> Checking for Joomla 4.* updates.</>');
                 if($this->install::checkForUpdates()) {
                     system($this->install::update());
-
-                    // copy the new functions from /Template/functions aswell
 
                     $io->writeln('<fg=white;bg=green>✓ Updates completed.</>');
                 }
@@ -216,7 +214,6 @@ class InstallJoomlaCommand extends Command
             // Installation completed
             $io->writeln('<fg=white;bg=green>✓ Installation completed.</>');
 
-
             // Setup.
             $io->section('Setup');
 
@@ -240,7 +237,7 @@ class InstallJoomlaCommand extends Command
                 $checklist->completePreviousItem();
             }
 
-            $io->writeln('<fg=white;bg=green>✓ Setup completed.</>');
+            $io->writeln('<fg=white;bg=green>✓ Setup completed, happy creating!</>');
 
             return command::SUCCESS;
         }

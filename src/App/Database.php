@@ -31,10 +31,14 @@ final class Database
         self::$user         = getenv('DB_USER');
         self::$password     = getenv('DB_PASS');
         self::$database     = getenv('DB_NAME');
-
     }
 
-    public static function dump(): bool|\Exception
+    /**
+     * Create a Mysql-dump of the current database
+     *
+     * @return bool|string
+     */
+    public static function dump(): bool|string
     {
         try {
             $dump = new Mysqldump(
@@ -50,9 +54,13 @@ final class Database
         }
     }
 
+    /**
+     * Database fix due to upgrade columns missing
+     *
+     * @return true
+     */
     public static function fix()
     {
-
         $extensions = self::$connection->query("SHOW COLUMNS FROM `" . self::$tablePrefix . "extensions` LIKE 'custom_data'");
         if(!mysqli_num_rows($extensions)) {
             self::$connection->query("ALTER TABLE `" . self::$tablePrefix . "extensions` ADD COLUMN `custom_data` text NOT NULL;");

@@ -15,7 +15,6 @@ final class Backup
         self::$templateName = getenv('TEMPLATE_TARGET');
     }
 
-
     /**
      * Create a backup folder if not yet present
      *
@@ -26,6 +25,11 @@ final class Backup
         mkdir(self::$backupFolder, 0755);
     }
 
+    /**
+     * Configuration backup
+     *
+     * @return true
+     */
     public static function configuration()
     {
         if(!file_exists(self::$backupFolder) && !is_dir(self::$backupFolder)) {
@@ -41,15 +45,25 @@ final class Backup
         return true;
     }
 
+    /**
+     * Template backup
+     *
+     * @return true
+     */
     public static function template()
     {
         if(!file_exists(self::$backupFolder) && !is_dir(self::$backupFolder)) {
             self::init();
         }
 
-        var_dump('Ready to backup the template file.'); exit;
+        return true;
     }
 
+    /**
+     * Restore the configuration file
+     *
+     * @return true
+     */
     public static function restoreConfiguration()
     {
         $filesystem = new Filesystem();
@@ -60,5 +74,4 @@ final class Backup
 
         return true;
     }
-
 }

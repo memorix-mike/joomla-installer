@@ -30,7 +30,8 @@ final class Upgrade extends Install
     /**
      * Get the version Url for the upgrade package
      *
-     * @return string
+     * @param string $version
+     * @return string|bool
      */
     private static function versionUrl(string $version): string|bool
     {
@@ -61,23 +62,21 @@ final class Upgrade extends Install
         return $destination;
     }
 
-
     /**
      * The installation command with pre-filled arguments
      *
      * @return string
      */
-    public static function install()
+    public static function install(): string
     {
-        $args = '';
-        foreach(self::installArguments() as $key => $value) {
-            $args .= ' ' . $key . '=' . $value;
-        }
-
         return 'cd ./public && php cli/joomla.php core:update';
     }
 
-
+    /**
+     * Move the installation from the upgradeFolder to the destinationFolder
+     *
+     * @return string|bool
+     */
     public static function move(): string|bool
     {
         $destinationFolder = getenv('TEMPLATE_TARGET');
@@ -96,7 +95,11 @@ final class Upgrade extends Install
         return $destinationFolder;
     }
 
-
+    /**
+     * Re-smlink the template after upgrading
+     *
+     * @return true
+     */
     public static function symlink()
     {
         symlink(
@@ -107,6 +110,11 @@ final class Upgrade extends Install
         return true;
     }
 
+    /**
+     * Remove the cached autoload file due to class-not-found issues
+     *
+     * @return bool
+     */
     public static function removeCache(): bool
     {
         system('rm ' . escapeshellarg('./public/administrator/cache/autoload_psr4.php'));
