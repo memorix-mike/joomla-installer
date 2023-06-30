@@ -14,10 +14,12 @@ if (!is_file($root_app . '/vendor/autoload.php')) {
 require_once $root_app . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
-use PicturaeInstaller\App\InstallJoomlaCommand;
+use PicturaeInstaller\Command\InstallCommand;
+use PicturaeInstaller\Command\MigrationCommand;
 
 $app = new Application();
 
-$app->add(new InstallJoomlaCommand());
+$app->add(new InstallCommand());
+$app->add(new MigrationCommand());
 
 $app->run();

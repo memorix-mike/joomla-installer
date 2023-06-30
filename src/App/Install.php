@@ -113,6 +113,26 @@ class Install
     }
 
     /**
+     * Delete the downloaded package file
+     *
+     * @param string $file
+     * @param string $location
+     * @return bool
+     */
+    public static function deleteDownload(string $file)
+    {
+        $fileLocation = './' . $file;
+
+        if(file_exists($fileLocation)) {
+            if(unlink($fileLocation)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Unzip the downloaded version of Joomla
      *
      * @param string $file
@@ -131,7 +151,12 @@ class Install
             $zip->extractTo('./' . $location . '/');
             $zip->close();
 
-            return true;
+            // Remove the download after unzipping
+            if(self::deleteDownload($file, $location)) {
+                return true;
+            }
+
+            return false;
         }
 
         return false;

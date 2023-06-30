@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace PicturaeInstaller\App;
+namespace PicturaeInstaller\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,13 +13,21 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Grasmash\SymfonyConsoleSpinner\Spinner;
 use Grasmash\SymfonyConsoleSpinner\Checklist;
 
+use PicturaeInstaller\App\Backup;
+use PicturaeInstaller\App\Database;
+use PicturaeInstaller\App\Env;
+use PicturaeInstaller\App\Install;
+use PicturaeInstaller\App\Status;
+use PicturaeInstaller\App\Template;
+use PicturaeInstaller\App\Upgrade;
+
 #[AsCommand(
     name: 'install',
     description: 'Creates a new user.',
     hidden: false,
     aliases: ['picturae:install']
 )]
-class InstallJoomlaCommand extends Command
+class InstallCommand extends Command
 {
     protected Install $install;
     protected Upgrade $upgrade;
@@ -46,7 +54,7 @@ class InstallJoomlaCommand extends Command
      */
     protected function configure(): void
     {
-        $this->setName('picturae:install')
+        $this->setName('install')
             ->setDescription('This command runs your custom task')
             ->setHelp('Run this command to execute your custom tasks in the execute function.')
             ->addOption('template', 't', null, 'Also create a template during installation', null);

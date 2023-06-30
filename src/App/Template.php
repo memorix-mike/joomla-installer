@@ -19,8 +19,7 @@ enum Date: string {
     case Latest         = '07-06-2023';
 }
 
-
-class Template
+final class Template
 {
     public static string $templateName;
     public static string $templateFolder;
