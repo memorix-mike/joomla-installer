@@ -5,6 +5,7 @@ namespace PicturaeInstaller\App;
 
 use Dotenv\Dotenv;
 use ZipArchive;
+use mysqli;
 
 /**
  * Version enums
@@ -28,6 +29,7 @@ class Install
 {
     public static string $installationFolder = './installation';
     public static string $currentVersion;
+    protected static mysqli $connection;
 
     public function __construct()
     {
@@ -42,6 +44,10 @@ class Install
     public static function check(): string
     {
         if(file_exists('./public/configuration.php')) {
+            return Status::UPDATE->value;
+        }
+
+        if(file_exists(getEnv('TEMPLATE_FOLDER') . '/configuration.php')) {
             return Status::UPDATE->value;
         }
 

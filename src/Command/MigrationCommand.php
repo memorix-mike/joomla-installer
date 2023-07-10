@@ -78,7 +78,7 @@ class MigrationCommand extends Command
         $this->migrate = new Migrate();
 
         // Create a dump from the source database
-        $io->writeln('<fg=black;bg=white>> Migrating from '  . $source . ' to ' . Environments::DEVELOPMENT->value . ' </>');
+        $io->writeln('<fg=black;bg=white>> Database: migrating '  . $source . ' to ' . Environments::DEVELOPMENT->value . ' </>');
 
         $checklist->addItem('Dumping from ' . $source . ' database');
         if($this->dump = $this->migrate::dump($source)) {
@@ -88,17 +88,21 @@ class MigrationCommand extends Command
             $checklist->addItem('Importing to ' . Environments::DEVELOPMENT->value . ' database');
             if($this->migrate::run($this->dump, Environments::DEVELOPMENT->value)) {
                 $checklist->completePreviousItem();
-
-                $io->writeln('<fg=white;bg=green>✓ Migration completed.</>');
-                return command::SUCCESS;
+            }
+            else {
+                $io->writeln('<fg=bright-white;bg=bright-red>Error during import.</>');
+                return command::FAILURE;
             }
 
-            $io->writeln('<fg=bright-white;bg=bright-red>Error during import.</>');
+            $io->writeln('<fg=black;bg=white>> Assets: migrating '  . $source . ' to ' . Environments::DEVELOPMENT->value . ' </>');
+
+            $io->writeln('<fg=white;bg=green>✓ Migration completed.</>');
+            return command::SUCCESS;
+        }
+        else {
+            $io->writeln('<fg=bright-white;bg=bright-red>Error during dumping.</>');
             return command::FAILURE;
         }
-
-        $io->writeln('<fg=bright-white;bg=bright-red>Error during dumping.</>');
-        return command::FAILURE;
     }
 
     /**

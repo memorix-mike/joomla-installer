@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace PicturaeInstaller\App;
 
+use \mysqli;
+use Envms\FluentPDO;
+
 final class Upgrade extends Install
 {
+    public static Database $db;
     public static string $templateName;
     public static string $templateFolder;
     public static string $templateTarget;
@@ -19,12 +23,31 @@ final class Upgrade extends Install
 
         // Define the template folder
         self::$templateFolder       = getenv('TEMPLATE_FOLDER');
-
         if(self::$templateFolder == "" || !isset(self::$templateFolder)) {
-            self::$templateFolder = './template';
+            self::$templateFolder   = './template';
         }
 
         self::$templateTarget       = getenv('TEMPLATE_TARGET');
+
+        // Database connection
+        self::$db = new Database();
+    }
+
+    public static function currentVersion()
+    {
+        $query = self::$db->build
+            ->from(getenv('DB_PREFIX') . 'extensions')
+            ->where('name', 'files_joomla');
+
+        // Fetch the manifest_cache
+        if($result = $query->fetch()) {
+            $manifest = json_decode($result['manifest_cache'], true);
+            if($manifest['version']) {
+                return $manifest['version'];
+            }
+        }
+
+        return null;
     }
 
     /**

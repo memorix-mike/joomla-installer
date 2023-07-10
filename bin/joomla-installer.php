@@ -16,10 +16,12 @@ require_once $root_app . '/vendor/autoload.php';
 use Symfony\Component\Console\Application;
 use PicturaeInstaller\Command\InstallCommand;
 use PicturaeInstaller\Command\MigrationCommand;
+use PicturaeInstaller\Command\UpgradeCommand;
 
 $app = new Application();
 
 $app->add(new InstallCommand());
 $app->add(new MigrationCommand());
+$app->add(new UpgradeCommand());
 
 $app->run();

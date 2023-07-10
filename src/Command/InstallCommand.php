@@ -8,18 +8,16 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
-use Grasmash\SymfonyConsoleSpinner\Spinner;
 use Grasmash\SymfonyConsoleSpinner\Checklist;
 
-use PicturaeInstaller\App\Backup;
-use PicturaeInstaller\App\Database;
 use PicturaeInstaller\App\Env;
 use PicturaeInstaller\App\Install;
 use PicturaeInstaller\App\Status;
 use PicturaeInstaller\App\Template;
 use PicturaeInstaller\App\Upgrade;
+use PicturaeInstaller\App\Backup;
+use PicturaeInstaller\App\DatabaseBackup;
 
 #[AsCommand(
     name: 'install',
@@ -32,7 +30,7 @@ class InstallCommand extends Command
     protected Install $install;
     protected Upgrade $upgrade;
     protected Backup $backup;
-    protected Database $database;
+    protected DatabaseBackup $database;
     protected array $versions;
     protected Env $env;
     protected Template $template;
@@ -88,7 +86,7 @@ class InstallCommand extends Command
         $this->install  = new Install;
         $this->upgrade  = new Upgrade;
         $this->backup   = new Backup;
-        $this->database = new Database;
+        $this->database = new DatabaseBackup;
 
         // 1. Check if we are installing or updating
         $io->writeln('<fg=black;bg=white>> Checking for any Joomla installation.</>');
@@ -101,7 +99,19 @@ class InstallCommand extends Command
 
             $io->section('Upgrade');
 
+            // Check if there is a database present
+            $io->writeln('<fg=black;bg=white>> Checking for existing databases here?!.</>');
+            if($this->database::check()) {
+
+                $io->writeln('<fg=black;bg=cyan>✓ Database found.</>');
+
+                if ($this->database::dump()) {
+                    $io->writeln('<fg=black;bg=cyan>✓ Database backup created.</>');
+                }
+            }
+
             $currentVersion = $this->upgrade::getCurrentVersion();
+
             if($currentVersion) {
                 $io->writeln('<fg=black;bg=white>> Current version is ' . $currentVersion . '.</>');
 
@@ -201,6 +211,15 @@ class InstallCommand extends Command
 
             $io->writeln('<fg=white;bg=yellow>! No Joomla installation found.</>');
             $io->section('Install');
+
+            // Check if there is a database present
+            $io->writeln('<fg=black;bg=white>> Checking for existing databases.</>');
+            if($this->database::check()) {
+                if ($this->database::dump()) {
+                    $io->writeln('<fg=black;bg=cyan>✓ Database backup created.</>');
+                }
+            }
+
 
             // Download
             $checklist->addItem('Downloading Joomla');

@@ -21,7 +21,6 @@ final class Migrate
         mkdir(self::$migrationFolder, 0755);
     }
 
-
     /**
      * @param string $environment
      * @return string[]
